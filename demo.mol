@@ -1,0 +1,104 @@
+# A Simple Functional Programming language.
+# >>> Moonlight Language <<<
+# Not final demonstration.
+
+# single expression test.
+1331/  3742*(2. +0.1
+    *(5.335*
+      3)-3 );
+
+# simple assign.
+a = -1 % 2;
+b = 1 % -2;
+c = 0.0 / 0.0;      # nan
+d = 1.0 / 0.0;      # inf
+e = -1.0 / 0.0;     # -inf
+
+# assign expressions test.
+a =b + 3- (asd = 56) +
+ (-2 * 6+(d %= 56*5 + 3) /-( 3
+   ));
+
+# question mark test.
+x = a ? b : c ? l : r;
+y = a ? b ? c : l : d ? e : r; # equals to below
+y = a ? (b ? c : l) : (d ? e : r);
+
+# function definition test.
+Instance = []{ => a + b; };
+Instance = [a, b, x]{ a += (b + c) * x; };
+p = Instance(1 + 2 * 3, 4, 5 * a + b);
+Instance = { b += a; =>.; };
+Instance();
+
+# compare and if statement test.
+a = 1 > 2;
+b += 1 < '2';   # will be convert to int.
+c = 1 == 2;
+x = 0;
+
+a > b ? [a, b]{
+    x = a + b;
+}(c, d) : {
+    x = 2;
+}();
+
+(a = b) ? [] { } () : { } ();
+
+# function that return a function:
+Add2 =[a] {
+    => [b] {
+        => a + b;
+    };
+};
+Add3 = [a] {
+    => [x] {
+        => [y] {
+            => x + y + a;
+        };
+    };
+};
+Add4 = [a] {
+    => [x] {
+        => [y] {
+            => [z] {
+                => x + y + z + a;
+            };
+        };
+    };
+};
+a = Add2(1)(a);
+a = Add3(1)(2)(3);
+FA = { => Add4(3)(2)(5)(a); };
+FA = FA();
+
+# loop test.
+a = 10;
+b = 0;
+a != 0 ::: {
+    a -= 1;
+    b += 1;
+}();
+
+# array test.
+a = {5}[c + 3];
+a.(1 + b / 2) = 12;
+a.1 = 9;
+a.1 + a.1 = 0;
+
+## advanced: loop break operation.
+i = 0;
+j = 0;
+n = 100;
+m = 100;
+loopA = 1;
+loopB = 1;
+!(loopA == 0) && i <= n ::: {
+    loopB != 0 && j <= m ::: {
+        i * 9 + j * 16 == 0 ? {
+            loopA = loopB = 0;
+        }() : 0;
+        j += 1;
+    };
+    i += 1;
+};

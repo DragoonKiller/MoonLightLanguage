@@ -1,0 +1,23 @@
+a = 'a';
+Write(a);
+Write(a + 0);
+b = a + 12;
+Write(b);
+Write(b + 0.0);
+c = b + 3.25;
+Write(c);
+
+Write(ToInt(c));
+Write(ToChar(b));
+Write(ToChar(ToInt(c)));
+
+# expected output
+###############################################################################
+a
+97
+109
+109
+112.25
+112
+m
+p
