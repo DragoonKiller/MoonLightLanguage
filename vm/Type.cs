@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Collections;
 
-public abstract class MType
+internal abstract class MType
 {
     public enum Spec
     {
@@ -18,38 +18,37 @@ public abstract class MType
     public Spec spec { get; protected set; }
 }
 
-public class MTypeChar : MType
+internal class MTypeChar : MType
 {
     public MTypeChar() => spec = Spec.Float;
     public override string ToString() => "MType.Char";
 }
 
-public class MTypeInt : MType
+internal class MTypeInt : MType
 {
     public MTypeInt() => spec = Spec.Float;
     public override string ToString() => "MType.Int";
 }
 
-public class MTypeFloat : MType
+internal class MTypeFloat : MType
 {
     public MTypeFloat() => spec = Spec.Float;
     public override string ToString() => "MType.Float";
 }
 
-public class MTypeArray : MType
+internal class MTypeArray : MType
 {
     public MTypeArray() => spec = Spec.Array;
     public override string ToString() => "MType.Array";
 }
 
-public class MTypeFunc : MType
+internal class MTypeFunc : MType
 {
-    public int parameterCount;
     public MTypeFunc() => spec = Spec.Func;
-    public override string ToString() => "MType.Func<" + parameterCount + ">";
+    public override string ToString() => "MType.Func";
 }
 
-public class MTypeUnknown : MType
+internal class MTypeUnknown : MType
 {
     public MTypeUnknown() => spec = Spec.unknonwn;
     public override string ToString() => "MType.undefined";

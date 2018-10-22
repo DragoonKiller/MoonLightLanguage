@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using static System.Console;
 /// MValues are the real instanse that calculate with each other.
 /// MVariables are pointers to MValue.
-public abstract class MValue
+internal abstract class MValue
 {
     public abstract MType type { get; }
     
@@ -545,21 +545,22 @@ public abstract class MValue
 /// Variables can reference to different type of objects, among MValue.
 /// MRef also can be a reference to MRef.
 /// This built up the final reference tree.
-public class MRef : MValue
+internal class MRef : MValue
 {
     public string name;
     public MValue target;
     public override MType type => target.type;
     /// Return the last reference to the final object (deref).
     public MRef downref => target is MRef r ? r.downref : this;
+    public bool isCoreref => !(target is MRef);
 }
 
-public class MNone : MValue
+internal class MNone : MValue
 {
     public override MType type => new MTypeUnknown();
 }
 
-public class MChar : MValue
+internal class MChar : MValue
 {
     public char value;
     public MChar(int v) { value = (char)v; }
@@ -569,7 +570,7 @@ public class MChar : MValue
     public override string ToString() => value.ToString();
 }
 
-public class MInt : MValue
+internal class MInt : MValue
 {
     public int value;
     public MInt(int v) { value = v; }
@@ -578,7 +579,7 @@ public class MInt : MValue
     public override string ToString() => value.ToString();
 }
 
-public class MFloat : MValue
+internal class MFloat : MValue
 {
     public double value;
     public MFloat(double v) { value = v; }
@@ -587,7 +588,7 @@ public class MFloat : MValue
     public override string ToString() => value.ToString();
 }
 
-public class MArray : MValue
+internal class MArray : MValue
 {
     public MRef[] array;
     public MRef this[int k] => array[k];
@@ -605,21 +606,30 @@ public class MArray : MValue
     }
 }
 
-/// A MFunctionTemplate is a function template that can take any variables
-///   as actual params.
+/// A MFunc is a function object that can take variables as actual params.
 /// This template will be converted into MFunction as parameters
-public class MFunc : MValue
+internal class MFunc : MValue
 {
     // When invoking a function, we use this field to build up a local identifier table,
     //   and deliver values to them.
     public string[] formalParams;
+    
+    // an object that stores function execution path it self.
     public MStatementBlock statements;
+    
+    // Variable capturing happens when a function object is built.
+    // It it does not return, it will successfully execute inside its context.
+    // However, when a functon is returned, its context should be reserved
+    //   while main execution flow throw out its context.
+    // The context of this function being protected is called a *capture*.
+    public (string name,MRef value)[] captures = new (string,MRef)[0]; // default no captures.
+    
     public override MType type => new MTypeFunc();
 }
 
-public abstract class MBuiltinFunc : MFunc { }
+internal abstract class MBuiltinFunc : MFunc { }
 
-public class MBuiltinReadChar : MBuiltinFunc
+internal class MBuiltinReadChar : MBuiltinFunc
 {
     public MBuiltinReadChar()
     {
@@ -628,7 +638,7 @@ public class MBuiltinReadChar : MBuiltinFunc
     }
 }
 
-public class MBuiltinReadInt : MBuiltinFunc
+internal class MBuiltinReadInt : MBuiltinFunc
 {
     public MBuiltinReadInt()
     {
@@ -637,7 +647,7 @@ public class MBuiltinReadInt : MBuiltinFunc
     }
 }
 
-public class MBuiltinReadFloat : MBuiltinFunc
+internal class MBuiltinReadFloat : MBuiltinFunc
 {
     public MBuiltinReadFloat()
     {
@@ -646,7 +656,7 @@ public class MBuiltinReadFloat : MBuiltinFunc
     }
 }
 
-public class MBuiltinWrite : MBuiltinFunc
+internal class MBuiltinWrite : MBuiltinFunc
 {
     public MBuiltinWrite()
     {
@@ -655,7 +665,7 @@ public class MBuiltinWrite : MBuiltinFunc
     }
 }
 
-public class MBuiltInToChar : MBuiltinFunc
+internal class MBuiltInToChar : MBuiltinFunc
 {
     public MBuiltInToChar()
     {
@@ -664,7 +674,7 @@ public class MBuiltInToChar : MBuiltinFunc
     }
 }
 
-public class MBuiltInToInt : MBuiltinFunc
+internal class MBuiltInToInt : MBuiltinFunc
 {
     public MBuiltInToInt()
     {
@@ -673,7 +683,7 @@ public class MBuiltInToInt : MBuiltinFunc
     }
 }
 
-public class MBuiltInToFloat : MBuiltinFunc
+internal class MBuiltInToFloat : MBuiltinFunc
 {
     public MBuiltInToFloat()
     {

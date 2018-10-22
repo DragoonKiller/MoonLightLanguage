@@ -5,3 +5,5 @@ bin/
 x.mol
 log.txt
 vm/lib/
+.vs/
+*.csproj.user

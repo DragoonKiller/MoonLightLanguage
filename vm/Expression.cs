@@ -1,27 +1,30 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Text;
+using System.Diagnostics;
 using static System.Console;
 
 /// An expression is a top leval *sentence* that *returns* something.
 /// The return value can be calculated due to the content of this expression.
-public abstract class MExp
+internal abstract class MExp
 {
     public int line;
     public int col;
+    public CaptureTable captures = new CaptureTable();
     public abstract MValue Eval(IdentifierTable t);
 }
 
-public interface MBuiltInExp { }
+internal interface MBuiltInExp { }
 
-public class MExpLiteral : MExp
+internal class MExpLiteral : MExp
 {
     // constant literal value does not need a MVariable to store.
     public MValue value;
     public override MValue Eval(IdentifierTable t) => value;
 }
 
-public class MExpIdentifier : MExp
+internal class MExpIdentifier : MExp
 {
     public string identifier;
     public override MValue Eval(IdentifierTable t)
@@ -31,7 +34,7 @@ public class MExpIdentifier : MExp
     }
 }
 
-public class MExpFuncDef : MExp
+internal class MExpFuncDef : MExp
 {
     public string[] formalParams;
     public MStatementGroup statements;
@@ -40,19 +43,19 @@ public class MExpFuncDef : MExp
         return new MFunc() {
             formalParams = formalParams,
             statements = statements,
+            captures = captures.Map((x) => (x, t.Search(x)))
         };
     }
 }
 
-public class MExpFuncExec : MExp
+internal class MExpFuncExec : MExp
 {
     public MExp func;
     public MExp[] actualParams;
-    
     public override MValue Eval(IdentifierTable t)
     {
         var fp = func.Eval(t);
-        if(fp is MFunc f)
+        if(fp.deref is MFunc f)
         {
             if(f.formalParams.Length != actualParams.Length)
             {
@@ -65,12 +68,20 @@ public class MExpFuncExec : MExp
                 );
             }
             
-            // build local identifier table.
+            // Build local identifier table.
             var g = new IdentifierTable() { parent = t };
+            
+            // Setup parameters. Pass actual parametes' value to formal paramters.
             int len = actualParams.Length;
             for(int i=0; i<len; i++) // execution order is from left to right.
             {
                 g.Create(f.formalParams[i], actualParams[i].Eval(t));
+            }
+            
+            // Setup captures. Pass reference to environemnt *core references*.
+            foreach(var i in f.captures)
+            {
+                g.Create(i.name, i.value);
             }
             
             return f.statements.Run(g);
@@ -80,7 +91,7 @@ public class MExpFuncExec : MExp
 }
 
 
-public class MExpArray : MExp
+internal class MExpArray : MExp
 {
     public MExp initValue;
     public MExp size;
@@ -100,7 +111,7 @@ public class MExpArray : MExp
 }
 
 
-public class MExpIndex : MExp
+internal class MExpIndex : MExp
 {
     public MExp array;
     public MExp index;
@@ -146,7 +157,7 @@ public class MExpIndex : MExp
     }
 }
 
-public class MExpAssign : MExp
+internal class MExpAssign : MExp
 {
     public MExp leftExp;
     public string op;
@@ -206,10 +217,7 @@ public class MExpAssign : MExp
                 throw new LogicException(
                     string.Format(
                         "Operation {0} changing the type of variable {1} from {2} to {3}",
-                        op,
-                        idf.identifier,
-                        l.type,
-                        r.type
+                        op, idf.identifier, l.type, r.type
                     ),
                     line, col
                 );
@@ -219,9 +227,7 @@ public class MExpAssign : MExp
                 throw new LogicException(
                     string.Format(
                         "Operation {0} changing the type of expression from {2} to {3}",
-                        op,
-                        l.type,
-                        r.type
+                        op, l.type, r.type
                     ),
                     line, col
                 );
@@ -232,7 +238,7 @@ public class MExpAssign : MExp
     }
 }
 
-public class MExpNegative : MExp
+internal class MExpNegative : MExp
 {
     public MExp exp;
     public override MValue Eval(IdentifierTable t)
@@ -243,7 +249,7 @@ public class MExpNegative : MExp
 }
 
 
-public class MExpNot : MExp
+internal class MExpNot : MExp
 {
     public MExp exp;
     public override MValue Eval(IdentifierTable t)
@@ -254,7 +260,7 @@ public class MExpNot : MExp
 }
 
 /// Includes ExpAdd, ExpMul, ExpCmp, ExpLogic
-public class MExpCalc : MExp
+internal class MExpCalc : MExp
 {
     public MExp left;
     public MExp right;
@@ -290,7 +296,7 @@ public class MExpCalc : MExp
     }
 }
 
-public class MExpIf : MExp
+internal class MExpIf : MExp
 {
     public MExp cond;
     public MExp fit;

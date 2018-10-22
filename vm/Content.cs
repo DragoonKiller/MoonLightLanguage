@@ -3,7 +3,11 @@ using System.Collections;
 using Newtonsoft.Json;
 
 /// Pure deserialized thing.
-public class MContent
+
+// Library use reflection to assign these variables.
+// Compiler does not know it so it will invoke *not assigned* warning.
+# pragma warning disable
+internal class MContent
 {
     public string type;
     public string value;

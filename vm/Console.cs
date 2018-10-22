@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using static System.Console;
 
-public static class ConsoleExt
+internal static class ConsoleExt
 {
     public static char ReadChar()
     {

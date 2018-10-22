@@ -2,10 +2,22 @@ using System;
 using System.Collections.Generic;
 using static System.Console;
 
-public class IdentifierTable
+internal class VirtualIdentifierTable : HashSet<string>
 {
-    public readonly Dictionary<string, MRef> identifiers = new Dictionary<string, MRef>();
+    public VirtualIdentifierTable parent = null;
     
+    public VirtualIdentifierTable Insert(string s)
+    {
+        Add(s);
+        return this;
+    }
+    
+    public bool ContainsAbove(string s)
+        => parent == null ? Contains(s) : (Contains(s) || parent.ContainsAbove(s));
+}
+
+internal class IdentifierTable : Dictionary<string, MRef>
+{
     public IdentifierTable parent = null;
     
     /// if the variable name is in current table, return Identifier itself,
@@ -15,7 +27,7 @@ public class IdentifierTable
     public MRef Search(string name, int line = -1, int column = -1)
     {
         if(name == "") throw new LogicException("Cannot deal with empty string!", line, column);
-        if(identifiers.TryGetValue(name, out MRef v)) return v;
+        if(TryGetValue(name, out MRef v)) return v;
         else
         {
             if(parent == null) throw new LogicException(
@@ -26,10 +38,13 @@ public class IdentifierTable
         }
     }
     
-    public MRef Create(string name, MValue init)
+    public MRef Create(string name, MValue init) // create a reference to *core reference*.
     {
-        var t = new MRef() { target = init };
-        identifiers.Add(name, t);
+        // When create someting, we create a reference to *core reference*, 
+        //   or directly create a *core reference*.
+        // Thus we do not allow refereces' reference when creating a variable.
+        var t = new MRef() { target = init is MRef r ? r.downref : init };
+        Add(name, t);
         return t;
     }
     
@@ -40,7 +55,7 @@ public class IdentifierTable
         {
             // Create a variable if not found.
             var t = new MRef(){ name = name };
-            identifiers.Add(name, t);
+            Add(name, t);
             t.target = initValue;
             return t;
         }

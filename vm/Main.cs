@@ -6,22 +6,14 @@ using static System.Console;
 
 public class __Main__
 {
-    static string mlcPath = "molc.exe";
+    const string mlcPath = "./bin/molc.exe";
     
     public static void Main(string[] args)
     {
-        try
-        {
-            VM vm = new VM(mlcPath);
-            vm.Compile(args[0], true);
-            DateTime t = DateTime.Now;
-            vm.Run();
-            WriteLine("Time used: " + (DateTime.Now - t).TotalMilliseconds + "ms.");
-        }
-        catch(Exception e)
-        {
-            WriteLine(e.Message);
-            WriteLine(e.StackTrace);
-        }
+        VM vm = new VM(mlcPath);
+        vm.Compile(args[0], true);
+        DateTime t = DateTime.Now;
+        vm.Run();
+        WriteLine("Time used: " + (DateTime.Now - t).TotalMilliseconds + "ms.");
     }
 }

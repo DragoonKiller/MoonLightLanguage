@@ -1,23 +1,12 @@
 a = 'a';
-Write(a);
-Write(a + 0);
+Write(a);                       # a
+Write(a + 0);                   # 97
 b = a + 12;
-Write(b);
-Write(b + 0.0);
+Write(b);                       # 109
+Write(b + 0.0);                 # 109
 c = b + 3.25;
-Write(c);
+Write(c);                       # 112.25
 
-Write(ToInt(c));
-Write(ToChar(b));
-Write(ToChar(ToInt(c)));
-
-# expected output
-###############################################################################
-a
-97
-109
-109
-112.25
-112
-m
-p
+Write(ToInt(c));                # 112
+Write(ToChar(b));               # m
+Write(ToChar(ToInt(c)));        # p

@@ -1,0 +1,38 @@
+a = 1;
+Write(a);                                   # 1
+
+AddA = [x] { => x + a; };
+Write(AddA(2));                             # 3
+
+a = 5;
+Write(AddA(2));                             # 7
+
+AddTwo = [x] { => [y] { => x + y; }; };
+Write(AddTwo(1)(2));                        # 3
+
+AddThree = [x] {
+    => [y] {
+        => [z] {
+            => x + y + z;
+        };
+    };
+};
+Write(AddThree(1)(2)(3));                   # 6
+
+AddTwoAndOther = AddThree(3);
+Write(AddTwoAndOther(6)(7));                # 16
+
+AddParams = [x, y, z] { => [g] { => x + y + z + g; }; };
+
+Write(AddParams(1, 10, 100)(7));            # 118
+
+MulTwo = [x, y] { => x * y; };
+ExecuteOp = [left, a, right] { => a(left, right); };
+ExecuteMulTwo = [left, right] { => MulTwo(left, right); };
+
+Write(ExecuteOp(12, MulTwo, 13));           # 156
+Write(ExecuteMulTwo(13, 12));               # 156
+
+MulTwo = [x, y] { => x + y; };
+
+Write(ExecuteMulTwo(12, 13));               # 25

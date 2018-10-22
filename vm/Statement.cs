@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Text;
 using static System.Console;
 
-public abstract class MStatementBlock
+internal abstract class MStatementBlock
 {
+    public CaptureTable captures = new CaptureTable();
     public abstract MValue Run(IdentifierTable t);
 }
 
-public class MStatementGroup : MStatementBlock
+internal class MStatementGroup : MStatementBlock
 {
     public MStatement[] statements;
     public override MValue Run(IdentifierTable t)
@@ -23,40 +25,40 @@ public class MStatementGroup : MStatementBlock
     }
 }
 
-public abstract class MStatementBuiltin : MStatementBlock { }
+internal abstract class MStatementBuiltin : MStatementBlock { }
 
-public class MStatementReadChar : MStatementBuiltin
+internal class MStatementReadChar : MStatementBuiltin
 {
     public override MValue Run(IdentifierTable t)
         => new MChar(ConsoleExt.ReadChar());
 }
-public class MStatementReadInt : MStatementBuiltin
+internal class MStatementReadInt : MStatementBuiltin
 {
     public override MValue Run(IdentifierTable t)
         => new MInt(ConsoleExt.ReadInt());
 }
-public class MStatementReadFloat : MStatementBuiltin
+internal class MStatementReadFloat : MStatementBuiltin
 {
     public override MValue Run(IdentifierTable t)
         => new MFloat(ConsoleExt.ReadFloat());
 }
 
-public class MStatementWrite : MStatementBuiltin
+internal class MStatementWrite : MStatementBuiltin
 {
     public const string paramPlaceHolder = "a";
     public override MValue Run(IdentifierTable t)
     {
-        WriteLine(t.identifiers[paramPlaceHolder].target);
+        WriteLine(t[paramPlaceHolder].target);
         return new MNone();
     }
 }
 
-public class MStatementToChar : MStatementBuiltin
+internal class MStatementToChar : MStatementBuiltin
 {
     public const string paramPlaceHolder = "a";
     public override MValue Run(IdentifierTable t)
     {
-        var v = t.identifiers[paramPlaceHolder].downref.target;
+        var v = t[paramPlaceHolder].downref.target;
         switch(v)
         {
             case MChar c: return new MChar(c.value);
@@ -67,12 +69,12 @@ public class MStatementToChar : MStatementBuiltin
     }
 }
 
-public class MStatementToInt : MStatementBuiltin
+internal class MStatementToInt : MStatementBuiltin
 {
     public const string paramPlaceHolder = "a";
     public override MValue Run(IdentifierTable t)
     {
-        var v = t.identifiers[paramPlaceHolder].downref.target;
+        var v = t[paramPlaceHolder].downref.target;
         switch(v)
         {
             case MChar c: return new MInt(c.value);
@@ -84,12 +86,12 @@ public class MStatementToInt : MStatementBuiltin
     }
 }
 
-public class MStatementToFloat : MStatementBuiltin
+internal class MStatementToFloat : MStatementBuiltin
 {
     public const string paramPlaceHolder = "a";
     public override MValue Run(IdentifierTable t)
     {
-        var v = t.identifiers[paramPlaceHolder].downref.target;
+        var v = t[paramPlaceHolder].downref.target;
         switch(v)
         {
             case MChar c: return new MFloat(c.value);
@@ -101,37 +103,44 @@ public class MStatementToFloat : MStatementBuiltin
     }
 }
 
-public interface MStatement { void Run(IdentifierTable t); }
-
-public class MStatementEmpty : MStatement
+internal abstract class MStatement
 {
-    public void Run(IdentifierTable t) { }
+    public CaptureTable captures = new CaptureTable();
+    public abstract void Run(IdentifierTable t);
 }
 
-public class MStatementExp : MStatement
+internal class MStatementEmpty : MStatement
 {
-    public MExp exp;
-    public void Run(IdentifierTable t) { exp.Eval(t); }
+    public override void Run(IdentifierTable t) { }
 }
 
-public class MStatementRet : MStatement
+internal class MStatementExp : MStatement
 {
     public MExp exp;
-    public void Run(IdentifierTable t)
+    public override void Run(IdentifierTable t)
+    {
+        exp.Eval(t); 
+    }
+}
+
+internal class MStatementRet : MStatement
+{
+    public MExp exp;
+    public override void Run(IdentifierTable t)
         => throw new InvalidOperationException("Use inner expression to evaluate return.");
 }
 
-public class MStatementRetEmpty : MStatement
+internal class MStatementRetEmpty : MStatement
 {
-    public void Run(IdentifierTable t)
+    public override void Run(IdentifierTable t)
         => throw new InvalidOperationException("Empty return does nothing.");
 }
 
-public class MStatementLoop : MStatement
+internal class MStatementLoop : MStatement
 {
     public MExp condition;
     public MExp exp;
-    public void Run(IdentifierTable t)
+    public override void Run(IdentifierTable t)
     {
         while(true)
         {

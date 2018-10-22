@@ -2,7 +2,7 @@ using System;
 using System.Runtime.Serialization;
 
 [System.Serializable]
-public class LogicException : Exception
+internal class LogicException : Exception
 {
     static string Position(int line, int column)
     {
@@ -18,7 +18,7 @@ public class LogicException : Exception
 }
 
 [System.Serializable]
-public class IdentifierNotFoundException : System.Exception
+internal class IdentifierNotFoundException : System.Exception
 {
     public IdentifierNotFoundException() { }
     public IdentifierNotFoundException(string message) : base(message) { }

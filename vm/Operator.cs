@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-public enum MOperator
+internal enum MOperator
 {
     Add,
     Sub,
@@ -27,7 +27,7 @@ public enum MOperator
     NotEqual,
 }
 
-public static class Op
+internal static class Op
 {
     public static MOperator From(string s)
     {
