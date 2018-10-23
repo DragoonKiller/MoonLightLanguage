@@ -165,18 +165,17 @@ internal class MExpAssign : MExp
     public override MValue Eval(IdentifierTable t)
     {
         MRef l = null;
-        var r = rightExp.Eval(t);
-        
         if(leftExp is MExpIdentifier leftId)
         {
             if(op == "=")
             {
-                l = t.SearchOrCreate(leftId.identifier, r.deref);
+                l = t.SearchOrCreate(leftId.identifier, new MNone());
             }
             else
             {
                 l = t.Search(leftId.identifier, line, col);
             }
+            
         }
         else // Assume left part is a reference.
         {
@@ -193,6 +192,8 @@ internal class MExpAssign : MExp
                 );
             }
         }
+        
+        var r = rightExp.Eval(t);
         
         if(op == "=")
         {

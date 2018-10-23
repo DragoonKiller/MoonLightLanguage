@@ -1,0 +1,15 @@
+i = 1;
+a = { { t = i; i += 1; => t; } }[8];
+
+Write(a);                   # [MFunc, MFunc, MFunc, MFunc, MFunc, MFunc, MFunc, MFunc, ]
+
+i = 0;
+a = {                       # re-assign is allowed.
+    {
+        v = (a.i)();        # i is reference captured! i += 1 applied when executing function a.i.
+        i += 1;             # so we have double i += 1.
+        => v;
+    }()
+}[4];
+
+Write(a);                   # [0, 2, 4, 6, ]

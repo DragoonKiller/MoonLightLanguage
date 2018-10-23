@@ -42,8 +42,8 @@ internal class IdentifierTable : Dictionary<string, MRef>
     {
         // When create someting, we create a reference to *core reference*, 
         //   or directly create a *core reference*.
-        // Thus we do not allow refereces' reference when creating a variable.
-        var t = new MRef() { target = init is MRef r ? r.downref : init };
+        // Notice MRef itself is reference type.
+        var t = init is MRef r ? r.downref : new MRef() { target = init };
         Add(name, t);
         return t;
     }

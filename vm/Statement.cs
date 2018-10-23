@@ -48,7 +48,7 @@ internal class MStatementWrite : MStatementBuiltin
     public const string paramPlaceHolder = "a";
     public override MValue Run(IdentifierTable t)
     {
-        WriteLine(t[paramPlaceHolder].target);
+        WriteLine(t[paramPlaceHolder].deref);
         return new MNone();
     }
 }

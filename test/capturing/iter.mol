@@ -1,0 +1,14 @@
+IteratorFrom = [x] {
+    => {
+        => x += 1;
+    };
+};
+
+iter = IteratorFrom(2);
+
+arr = {iter()} [10];
+
+Write(arr);
+
+# expected output:
+# [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ]

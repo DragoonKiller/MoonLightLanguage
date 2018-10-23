@@ -174,8 +174,8 @@ internal class VM
                 
                 case "ExpAssign":
                 {
-                    // Add the key first.
-                    if(x.subs[0].type == "Identifier")
+                    // Add the key first, if context does not contains.
+                    if(x.subs[0].type == "Identifier" && !t.ContainsAbove(x.subs[0].value))
                     {
                         t.Add(x.subs[0].value);
                     }
