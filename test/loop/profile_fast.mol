@@ -1,0 +1,15 @@
+# profiling.
+# calculate 1 + 2 + 3 + ... + n.
+
+i = 1;
+s = 0.0;    # Double can store larger number.
+F = {
+    s += i;
+    i += 1;
+};
+
+i != 19260817 ::: F();
+
+Write(s);   # 185489526123336
+
+# takes about 18s.

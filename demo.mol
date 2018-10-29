@@ -45,32 +45,6 @@ a > b ? [a, b]{
 
 (a = b) ? [] { } () : { } ();
 
-# function that return a function:
-Add2 =[a] {
-    => [b] {
-        => a + b;
-    };
-};
-Add3 = [a] {
-    => [x] {
-        => [y] {
-            => x + y + a;
-        };
-    };
-};
-Add4 = [a] {
-    => [x] {
-        => [y] {
-            => [z] {
-                => x + y + z + a;
-            };
-        };
-    };
-};
-a = Add2(1)(a);
-a = Add3(1)(2)(3);
-FA = { => Add4(3)(2)(5)(a); };
-FA = FA();
 
 # loop test.
 a = 10;
@@ -85,20 +59,3 @@ a = {5}[c + 3];
 a.(1 + b / 2) = 12;
 a.1 = 9;
 a.1 + a.1 = 0;
-
-## advanced: loop break operation.
-i = 0;
-j = 0;
-n = 100;
-m = 100;
-loopA = 1;
-loopB = 1;
-!(loopA == 0) && i <= n ::: {
-    loopB != 0 && j <= m ::: {
-        i * 9 + j * 16 == 0 ? {
-            loopA = loopB = 0;
-        }() : 0;
-        j += 1;
-    };
-    i += 1;
-};

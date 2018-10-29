@@ -1,0 +1,7 @@
+F = [a, b] { => a + b; };
+Write(F(1, 3));         # 4
+Write(F(1, 3.5));       # 4
+Write(F('c', 3.0));     # 102
+
+None = {}();
+Write(F(None, 3));      # invoke error: none cannot be calculated with int.

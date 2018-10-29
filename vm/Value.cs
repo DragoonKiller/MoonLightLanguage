@@ -557,7 +557,7 @@ internal class MRef : MValue
 
 internal class MNone : MValue
 {
-    public override MType type => new MTypeUnknown();
+    public override MType type => new MTypeNone();
 }
 
 internal class MChar : MValue
