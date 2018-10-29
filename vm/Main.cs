@@ -17,18 +17,21 @@ public class __Main__
         VM vm = new VM(mlcPath);
         vm.Compile(args[0], true);
         
-        #if CATCH
+        #if DISPLAY_TIME
         DateTime t = DateTime.Now;
         #endif
         
         vm.Run();
         
-        #if CATCH
+        #if DISPLAY_TIME
         WriteLine("Time used: " + (DateTime.Now - t).TotalMilliseconds + "ms.");
+        #endif
+        
+        #if CATCH
         }
         catch(Exception e)
         {
-            WriteLine(e);
+            WriteLine(e.Message);
         }
         #endif
     }

@@ -1,0 +1,14 @@
+fib = {1}[20];
+
+# in code below, i += 1 first calculated.
+# then get reference of fib.i.
+# then fetch value of fib.(i-1) and fib(i-2) and calculate their sum.
+# finally the sum will be assigned into fib.i's reference.
+i = 1;
+i < 19 ::: fib.(i += 1) = fib.(i-1) + fib.(i-2);
+
+Write(fib);
+
+# expected outut:
+###############################################################################
+# [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, ]

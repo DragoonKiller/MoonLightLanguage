@@ -49,7 +49,14 @@ internal class VM
             if(output) WriteLine("Compile Finished!");
         }
         catch(CompileErrorException e) { WriteLine(e.Message); }
-        catch(Exception e) { WriteLine(e.Message + "\n" + e.StackTrace); }
+        catch(Exception e)
+        {
+            #if BACK_TRACE
+            WriteLine(e.Message + "\n" + e.StackTrace);
+            #else
+            WriteLine(e.Message);
+            #endif
+        }
         return;
     }
     
@@ -206,7 +213,7 @@ internal class VM
                 {
                     var l = BuildExpression(x.subs[0], t);
                     var r = BuildExpression(x.subs[1], t);
-                    return new MExpCalc() { left = l, right = r, op = Op.From(x.value), captures = l.captures.Merge(r.captures) };
+                    return new MExpCalc() { left = l, right = r, op = x.value, captures = l.captures.Merge(r.captures) };
                 }
                     
                 case "ExpIf":
@@ -233,9 +240,9 @@ internal class VM
         }
         
         var exp = BuildDis();
-        Debug.Assert(exp.captures != null);
         exp.line = x.line;
         exp.col = x.column;
+        Debug.Assert(exp.captures != null);
         return exp;
     }
 }

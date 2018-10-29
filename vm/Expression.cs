@@ -265,7 +265,7 @@ internal class MExpCalc : MExp
 {
     public MExp left;
     public MExp right;
-    public MOperator op;
+    public string op;
     public override MValue Eval(IdentifierTable t)
     {
         var l = left.Eval(t);
@@ -274,19 +274,19 @@ internal class MExpCalc : MExp
         {
             switch(op)
             {
-                case MOperator.Add: return MValue.Add(l, r);
-                case MOperator.Sub: return MValue.Sub(l, r);
-                case MOperator.Mul: return MValue.Mul(l, r);
-                case MOperator.Div: return MValue.Div(l, r);
-                case MOperator.Mod: return MValue.Mod(l, r);
-                case MOperator.Equal: return MValue.Eq(l, r);
-                case MOperator.NotEqual: return MValue.Neq(l, r);
-                case MOperator.And: return MValue.And(l, r);
-                case MOperator.Or: return MValue.Or(l, r);
-                case MOperator.Less: return MValue.Less(l, r);
-                case MOperator.Greater: return MValue.Greater(l, r);
-                case MOperator.LessEqual: return MValue.LessEq(l, r);
-                case MOperator.GreaterEqual: return MValue.GreaterEq(l, r);
+                case "+": return MValue.Add(l, r);
+                case "-": return MValue.Sub(l, r);
+                case "*": return MValue.Mul(l, r);
+                case "/": return MValue.Div(l, r);
+                case "%": return MValue.Mod(l, r);
+                case "==": return MValue.Eq(l, r);
+                case "!=": return MValue.Neq(l, r);
+                case "&&": return MValue.And(l, r);
+                case "||": return MValue.Or(l, r);
+                case "<": return MValue.Less(l, r);
+                case ">": return MValue.Greater(l, r);
+                case "<=": return MValue.LessEq(l, r);
+                case ">=": return MValue.GreaterEq(l, r);
             }
             throw new LogicException("");
         }

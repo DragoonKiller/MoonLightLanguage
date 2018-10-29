@@ -11,7 +11,6 @@ internal abstract class MType
         Int,
         Float,
         Array,
-        FuncTemplate,
         Func,
     };
     
@@ -48,8 +47,8 @@ internal class MTypeFunc : MType
     public override string ToString() => "MType.Func";
 }
 
-internal class MTypeUnknown : MType
+internal class MTypeNone : MType
 {
-    public MTypeUnknown() => spec = Spec.unknonwn;
-    public override string ToString() => "MType.undefined";
+    public MTypeNone() => spec = Spec.unknonwn;
+    public override string ToString() => "MType.None";
 }
