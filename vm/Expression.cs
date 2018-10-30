@@ -118,7 +118,7 @@ internal class MExpIndex : MExp
     public override MValue Eval(IdentifierTable t)
     {
         var arx = array.Eval(t);
-        if(arx is MArray arr)
+        if(arx.deref is MArray arr)
         {
             int len = arr.array.Length;
             var idxt = index.Eval(t);
